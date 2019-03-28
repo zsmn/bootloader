@@ -29,7 +29,6 @@ dica9 db "d9", 13
 
 
 start:
-
 	xor ax, ax
 	mov ds, ax
 
@@ -49,19 +48,28 @@ start:
 
 	jmp exit
 
-printDelayStr:
-	lodsb
-
+printCommand: ;printa o que está em al
 	mov ah, 0xe
 	mov bx, 0x7
 	mov bh, 0
 	int 10h
+ret
+
+printDelayStr:
+	lodsb
+	cmp al, 13
+	je .bixinha
+
+	call printCommand
+	mov al, ' ' ; move um espaço para printar a palavra separada por espaços
+	call printCommand
 
 	call delay
 
-	cmp al, 13
-	jne printDelayStr
-ret
+	jmp printDelayStr
+
+	.bixinha:
+		ret
 
 delay:
 	mov bp, 350
@@ -89,8 +97,6 @@ random_number:
 ret
 
 move_random:
-	mov si, debug
-
 	cmp dl, 0
 	je .sub0
 	cmp dl, 1
@@ -142,7 +148,7 @@ ret
 		ret
 	.sub9:
 		mov si, palavras9
-	ret 
+		ret 
 ret
 
 exit:
